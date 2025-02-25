@@ -13,4 +13,6 @@ test('create an answer', () => {
   expect(answer).toBeTruthy();
   expect(answer.id).toBeTruthy();
   expect(answer.content).toEqual('Nova resposta');
+  expect(answer.authorId).toEqual('1');
+  expect(answer.questionId).toEqual('1');
 });
