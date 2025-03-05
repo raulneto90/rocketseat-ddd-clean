@@ -1,7 +1,6 @@
 import { Entity } from '../../core/entities/entity';
 
 interface InstructorProps {
-  id?: string;
   name: string;
 }
 
