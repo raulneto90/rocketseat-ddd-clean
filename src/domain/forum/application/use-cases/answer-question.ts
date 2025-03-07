@@ -1,6 +1,6 @@
-import { Answer } from '../entities/answer';
-import { UniqueEntityId } from '../entities/value-objects/unique-entity-id';
-import type { AnswersRepository } from '../repositories/answers-repository';
+import { Answer } from '../../enterprise/entities/answer';
+import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
+import { AnswersRepository } from '../repositories/answers-repository';
 
 interface ExecuteParams {
   questionId: string;

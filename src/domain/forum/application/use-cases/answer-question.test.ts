@@ -1,5 +1,5 @@
-import type { Answer } from '../entities/answer';
-import type { AnswersRepository } from '../repositories/answers-repository';
+import { Answer } from '../../enterprise/entities/answer';
+import { AnswersRepository } from '../repositories/answers-repository';
 import { AnswerQuestionUseCase } from './answer-question';
 
 describe(' Answer Question Use Case', () => {

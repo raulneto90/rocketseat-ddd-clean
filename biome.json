@@ -8,8 +8,7 @@
     "enabled": true,
     "indentStyle": "space",
     "lineEnding": "lf",
-    "lineWidth": 120,
-    "attributePosition": "auto"
+    "lineWidth": 120
   },
   "organizeImports": {
     "enabled": true
@@ -18,7 +17,14 @@
     "enabled": true,
     "include": ["*.ts"],
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "useImportType": "off"
+      },
+      "complexity": {},
+      "correctness": {
+        "noUnusedImports": "error"
+      }
     }
   },
   "javascript": {
@@ -29,7 +35,8 @@
       "bracketSpacing": true,
       "trailingCommas": "all",
       "quoteProperties": "asNeeded",
-      "semicolons": "always"
+      "semicolons": "always",
+      "attributePosition": "auto"
     },
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
