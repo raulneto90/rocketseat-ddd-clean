@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest';
 import type { Answer } from '../entities/answer';
 import type { AnswersRepository } from '../repositories/answers-repository';
 import { AnswerQuestionUseCase } from './answer-question';
