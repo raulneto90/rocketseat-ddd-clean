@@ -27,8 +27,8 @@ describe('GetQuestionBySlugUseCase', () => {
     expect(question).toBeInstanceOf(Question);
     expect(question.id).toBeDefined();
     expect(question.authorId.toValue()).toEqual('author-1');
-    expect(question.title).toEqual('Question Title');
-    expect(question.content).toEqual('Question Content');
+    expect(question.title).toEqual(newQuestion.title);
+    expect(question.content).toEqual(newQuestion.content);
     expect(question.createdAt).toBeInstanceOf(Date);
   });
 });
