@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Slug } from './value-objects/slug';
 import { UniqueEntityId } from './value-objects/unique-entity-id';
 
-interface QuestionProps {
+export interface QuestionProps {
   authorId: UniqueEntityId;
   bestAnswerId?: UniqueEntityId;
   title: string;
