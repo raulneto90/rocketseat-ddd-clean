@@ -5,8 +5,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "biome lint",
-    "format": "biome format --write"
+    "lint": "biome lint ./src",
+    "lint:check": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off"
   },
   "keywords": [],
   "author": "",

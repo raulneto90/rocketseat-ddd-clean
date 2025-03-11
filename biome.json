@@ -8,7 +8,8 @@
     "enabled": true,
     "indentStyle": "space",
     "lineEnding": "lf",
-    "lineWidth": 120
+    "lineWidth": 120,
+    "formatWithErrors": false
   },
   "organizeImports": {
     "enabled": true
@@ -16,6 +17,7 @@
   "linter": {
     "enabled": true,
     "include": ["*.ts"],
+
     "rules": {
       "recommended": true,
       "style": {

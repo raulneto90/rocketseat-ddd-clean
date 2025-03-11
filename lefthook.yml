@@ -1,27 +1,9 @@
-# EXAMPLE USAGE:
-#
-#   Refer for explanation to following link:
-#   https://lefthook.dev/configuration/
-#
-# pre-push:
-#   jobs:
-#     - name: packages audit
-#       tags:
-#         - frontend
-#         - security
-#       run: yarn audit
-#
-#     - name: gems audit
-#       tags:
-#         - backend
-#         - security
-#       run: bundle audit
-#
 pre-commit:
   parallel: true
-  jobs:
-    - run: npm run lint {staged_files}
-      glob: "*.{js,ts,jsx,tsx}"
-
-    - name: test
+  commands:
+    check:
+      glob: "*.{ts,json,js,jsonc,mts}"
+      run: npm run lint && npm run lint:check {staged_files}
+      stage_fixed: true
+    test:
       run: npm test
