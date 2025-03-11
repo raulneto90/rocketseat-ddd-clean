@@ -1,20 +1,17 @@
-import { Answer } from '../../enterprise/entities/answer';
-import { AnswersRepository } from '../repositories/answers-repository';
+import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
 import { AnswerQuestionUseCase } from './answer-question';
 
 describe(' Answer Question Use Case', () => {
-  const fakeAnswersRepository: AnswersRepository = {
-    create: async (answer: Answer) => Promise.resolve(),
-  };
-
-  let answerQuestionUseCase: AnswerQuestionUseCase;
+  let useCase: AnswerQuestionUseCase;
+  let inMemoryAnswersRepository: InMemoryAnswersRepository;
 
   beforeEach(() => {
-    answerQuestionUseCase = new AnswerQuestionUseCase(fakeAnswersRepository);
+    inMemoryAnswersRepository = new InMemoryAnswersRepository();
+    useCase = new AnswerQuestionUseCase(inMemoryAnswersRepository);
   });
 
   it('should create an answer', async () => {
-    const answer = await answerQuestionUseCase.execute({
+    const { answer } = await useCase.execute({
       instructorId: '1',
       questionId: '1',
       content: 'Nova resposta',

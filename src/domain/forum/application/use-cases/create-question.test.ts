@@ -1,15 +1,17 @@
+import { InMemoryQuestionsRepository } from 'tests/repositories/in-memory-questions-repository';
 import { Question } from '../../enterprise/entities/question';
-import { QuestionsRepository } from '../repositories/questions-repository';
 import { CreateQuestionUseCase } from './create-question';
 
 describe('CreateQuestionUseCase', () => {
-  const fakeQuestionsRepository: QuestionsRepository = {
-    create: async (question: Question) => {},
-  };
+  let useCase: CreateQuestionUseCase;
+  let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+
+  beforeEach(() => {
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository();
+    useCase = new CreateQuestionUseCase(inMemoryQuestionsRepository);
+  });
 
   it('should be able to create a question', async () => {
-    const useCase = new CreateQuestionUseCase(fakeQuestionsRepository);
-
     const { question } = await useCase.execute({
       authorId: 'author-1',
       title: 'Question Title',

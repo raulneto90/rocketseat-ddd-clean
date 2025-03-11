@@ -2,16 +2,20 @@ import { Answer } from '../../enterprise/entities/answer';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
 import { AnswersRepository } from '../repositories/answers-repository';
 
-interface ExecuteParams {
+interface AnswerQuestionParams {
   questionId: string;
   instructorId: string;
   content: string;
 }
 
+interface AnswerQuestionUseCaseResponse {
+  answer: Answer;
+}
+
 export class AnswerQuestionUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
-  async execute({ instructorId, questionId, content }: ExecuteParams) {
+  async execute({ instructorId, questionId, content }: AnswerQuestionParams): Promise<AnswerQuestionUseCaseResponse> {
     const answer = Answer.create({
       authorId: new UniqueEntityId(instructorId),
       questionId: new UniqueEntityId(questionId),
@@ -20,6 +24,6 @@ export class AnswerQuestionUseCase {
 
     await this.answersRepository.create(answer);
 
-    return answer;
+    return { answer };
   }
 }
