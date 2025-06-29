@@ -1,6 +1,8 @@
 import { makeAnswerComment } from 'tests/factories/make-answer-comment';
 import { InMemoryAnswerCommentsRepository } from 'tests/repositories/in-memory-answer-comments-repository';
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('DeleteAnswerComment', () => {
   let useCase: DeleteAnswerCommentUseCase;
@@ -35,7 +37,7 @@ describe('DeleteAnswerComment', () => {
     expect(result.isRight()).toBe(false);
 
     if (result.isLeft()) {
-      expect(result.reason).toBe('Answer comment not found');
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
     }
   });
 
@@ -53,7 +55,7 @@ describe('DeleteAnswerComment', () => {
     expect(result.isRight()).toBe(false);
 
     if (result.isLeft()) {
-      expect(result.reason).toBe('Not allowed to delete this comment');
+      expect(result.reason).toBeInstanceOf(NotAllowedError);
     }
   });
 });
