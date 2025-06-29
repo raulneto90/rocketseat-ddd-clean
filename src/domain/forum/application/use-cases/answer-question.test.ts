@@ -11,14 +11,21 @@ describe(' Answer Question Use Case', () => {
   });
 
   it('should create an answer', async () => {
-    const { answer } = await useCase.execute({
+    const result = await useCase.execute({
       instructorId: '1',
       questionId: '1',
       content: 'Nova resposta',
     });
 
-    expect(answer).toBeTruthy();
-    expect(answer.id).toBeTruthy();
-    expect(answer.content).toEqual('Nova resposta');
+    expect(result).toBeTruthy();
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+
+    if (result.isRight()) {
+      expect(result.result.answer).toBeDefined();
+      expect(result.result.answer.content).toBe('Nova resposta');
+      expect(result.result.answer.authorId.toString()).toBe('1');
+      expect(result.result.answer.questionId.toString()).toBe('1');
+    }
   });
 });

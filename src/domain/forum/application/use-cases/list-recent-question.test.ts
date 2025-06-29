@@ -16,19 +16,17 @@ describe('ListRecentQuestionsUseCase', () => {
     await inMemoryQuestionsRepository.create(makeQuestion({ createdAt: new Date('2023-01-02') }));
     await inMemoryQuestionsRepository.create(makeQuestion({ createdAt: new Date('2023-01-03') }));
 
-    const { questions } = await useCase.execute({ page: 1 });
-    expect(questions).toHaveLength(3);
-    expect(questions).toEqual([
-      expect.objectContaining({
-        createdAt: new Date('2023-01-03'),
-      }),
-      expect.objectContaining({
-        createdAt: new Date('2023-01-02'),
-      }),
-      expect.objectContaining({
-        createdAt: new Date('2023-01-01'),
-      }),
-    ]);
+    const result = await useCase.execute({ page: 1 });
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+
+    if (result.isRight()) {
+      const { questions } = result.result;
+      expect(questions).toHaveLength(3);
+      expect(questions[0].createdAt).toEqual(new Date('2023-01-03'));
+      expect(questions[1].createdAt).toEqual(new Date('2023-01-02'));
+      expect(questions[2].createdAt).toEqual(new Date('2023-01-01'));
+    }
   });
 
   it('should be able to paginate recent questions', async () => {
@@ -36,8 +34,11 @@ describe('ListRecentQuestionsUseCase', () => {
       await inMemoryQuestionsRepository.create(makeQuestion());
     }
 
-    const { questions } = await useCase.execute({ page: 2 });
+    const result = await useCase.execute({ page: 2 });
 
-    expect(questions).toHaveLength(2);
+    if (result.isRight()) {
+      const { questions } = result.result;
+      expect(questions).toHaveLength(2);
+    }
   });
 });

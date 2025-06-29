@@ -1,15 +1,16 @@
+import { Either, failure, success } from '@api/core/errors/either';
 import { Question } from '../../enterprise/entities/question';
 import { AnswersRepository } from '../repositories/answers-repository';
 import { QuestionsRepository } from '../repositories/questions-repository';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface ChoooseQuestionBestAnswerParams {
   answerId: string;
   authorId: string;
 }
 
-interface ChoooseQuestionBestAnswerUseCaseResponse {
-  question: Question;
-}
+type ChoooseQuestionBestAnswerUseCaseResponse = Either<ResourceNotFoundError | NotAllowedError, { question: Question }>;
 
 export class ChoooseQuestionBestAnswerUseCase {
   constructor(
@@ -24,23 +25,25 @@ export class ChoooseQuestionBestAnswerUseCase {
     const answer = await this.answersRepository.findById(answerId);
 
     if (!answer) {
-      throw new Error('Answer not found');
+      return failure(new ResourceNotFoundError());
     }
 
     const question = await this.questionsRepository.findById(answer.questionId.toValue());
 
     if (!question) {
-      throw new Error('Question not found');
+      return failure(new ResourceNotFoundError());
     }
 
     if (authorId !== question.authorId.toString()) {
-      throw new Error('Not allowed');
+      return failure(new NotAllowedError());
     }
 
     question.bestAnswerId = answer.id;
 
     await this.questionsRepository.update(question);
 
-    return { question };
+    return success({
+      question,
+    });
   }
 }

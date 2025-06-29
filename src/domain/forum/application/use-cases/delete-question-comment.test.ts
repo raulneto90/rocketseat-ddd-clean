@@ -1,6 +1,8 @@
 import { makeQuestionComment } from 'tests/factories/make-question-comment';
 import { InMemoryQuestionCommentsRepository } from 'tests/repositories/in-memory-question-comments-repository';
 import { DeleteQuestionCommentUseCase } from './delete-question-comment';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('DeleteQuestionComment', () => {
   let useCase: DeleteQuestionCommentUseCase;
@@ -26,12 +28,17 @@ describe('DeleteQuestionComment', () => {
   });
 
   it('should not be able to delete a non-existing question comment', async () => {
-    await expect(() =>
-      useCase.execute({
-        authorId: 'author-1',
-        questionCommentId: 'non-existing-comment',
-      }),
-    ).rejects.toThrow('Question comment not found');
+    const result = await useCase.execute({
+      authorId: 'author-1',
+      questionCommentId: 'non-existing-comment',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 
   it('should not be able to delete a question comment from another user', async () => {
@@ -39,11 +46,16 @@ describe('DeleteQuestionComment', () => {
 
     await inMemoryQuestionCommentsRepository.create(questionComment);
 
-    await expect(() =>
-      useCase.execute({
-        authorId: 'author-2',
-        questionCommentId: questionComment.id.toString(),
-      }),
-    ).rejects.toThrow('Not allowed to delete this comment');
+    const result = await useCase.execute({
+      authorId: 'author-2',
+      questionCommentId: questionComment.id.toString(),
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(NotAllowedError);
+    }
   });
 });

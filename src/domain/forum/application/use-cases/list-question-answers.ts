@@ -1,3 +1,4 @@
+import { Either, success } from '@api/core/errors/either';
 import { Answer } from '../../enterprise/entities/answer';
 import { AnswersRepository } from '../repositories/answers-repository';
 
@@ -6,9 +7,7 @@ interface ListQuestionAnswersUseCaseRequest {
   questionId: string;
 }
 
-interface ListQuestionAnswersUseCaseResponse {
-  answers: Answer[];
-}
+type ListQuestionAnswersUseCaseResponse = Either<null, { answers: Answer[] }>;
 
 export class ListQuestionAnswersUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
@@ -16,8 +15,6 @@ export class ListQuestionAnswersUseCase {
   async execute({ page, questionId }: ListQuestionAnswersUseCaseRequest): Promise<ListQuestionAnswersUseCaseResponse> {
     const answers = await this.answersRepository.findManyByQuestionId(questionId, { page });
 
-    return {
-      answers,
-    };
+    return success({ answers });
   }
 }

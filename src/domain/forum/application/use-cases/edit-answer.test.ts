@@ -2,6 +2,8 @@ import { makeAnswer } from 'tests/factories/make-answer';
 import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
 import { EditAnswerUseCase } from './edit-answer';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('EditAnswerUseCase', () => {
   let useCase: EditAnswerUseCase;
@@ -34,13 +36,18 @@ describe('EditAnswerUseCase', () => {
   });
 
   it('should not be able to update a answer if it does not exist', async () => {
-    await expect(
-      useCase.execute({
-        answerId: 'answer-1',
-        authorId: 'author-1',
-        content: 'New content',
-      }),
-    ).rejects.toThrow('Answer not found');
+    const result = await useCase.execute({
+      answerId: 'non-existing-answer',
+      authorId: 'author-1',
+      content: 'New content',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 
   it('should not be able to update a answer if the author is different', async () => {
@@ -53,13 +60,16 @@ describe('EditAnswerUseCase', () => {
 
     await inMemoryAnswersRepository.create(newAnswer);
 
-    await expect(
-      useCase.execute({
-        answerId: 'answer-1',
-        authorId: 'author-2',
+    const result = await useCase.execute({
+      answerId: 'answer-1',
+      authorId: 'author-2',
+      content: 'New content',
+    });
 
-        content: 'New content',
-      }),
-    ).rejects.toThrow('Not allowed');
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(NotAllowedError);
+    }
   });
 });

@@ -2,6 +2,8 @@ import { makeAnswer } from 'tests/factories/make-answer';
 import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
 import { DeleteAnswerUseCase } from './delete-answer';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('DeleteAnswerUseCase', () => {
   let useCase: DeleteAnswerUseCase;
@@ -31,12 +33,17 @@ describe('DeleteAnswerUseCase', () => {
   });
 
   it('should not be able to delete a answer if it does not exist', async () => {
-    await expect(
-      useCase.execute({
-        answerId: 'answer-1',
-        authorId: 'author-1',
-      }),
-    ).rejects.toThrow('Answer not found');
+    const result = await useCase.execute({
+      answerId: 'non-existing-answer',
+      authorId: 'author-1',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 
   it('should not be able to delete a answer if the author is different', async () => {
@@ -49,11 +56,16 @@ describe('DeleteAnswerUseCase', () => {
 
     await inMemoryAnswersRepository.create(newAnswer);
 
-    await expect(
-      useCase.execute({
-        answerId: 'answer-1',
-        authorId: 'author-2',
-      }),
-    ).rejects.toThrow('Not allowed');
+    const result = await useCase.execute({
+      answerId: 'answer-1',
+      authorId: 'author-2',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(NotAllowedError);
+    }
   });
 });

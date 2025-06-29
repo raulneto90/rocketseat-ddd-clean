@@ -2,6 +2,7 @@ import { makeAnswer } from 'tests/factories/make-answer';
 import { InMemoryAnswerCommentsRepository } from 'tests/repositories/in-memory-answer-comments-repository';
 import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
 import { CommentOnAnswerUseCase } from './comment-on-answer';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('CommentOnAnswerUseCase', () => {
   let useCase: CommentOnAnswerUseCase;
@@ -19,25 +20,35 @@ describe('CommentOnAnswerUseCase', () => {
 
     await inMemoryAnswersRepository.create(answer);
 
-    const { answerComment } = await useCase.execute({
+    const result = await useCase.execute({
       answerId: answer.id.toString(),
       authorId: 'author-1',
       content: 'Example comment',
     });
 
-    expect(answerComment.id).toBeTruthy();
-    expect(answerComment.content).toEqual('Example comment');
-    expect(inMemoryAnswerCommentsRepository.items).toHaveLength(1);
-    expect(inMemoryAnswerCommentsRepository.items[0]).toEqual(answerComment);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+
+    if (result.isRight()) {
+      expect(result.result.answerComment).toBeDefined();
+      expect(result.result.answerComment.content).toBe('Example comment');
+      expect(result.result.answerComment.authorId.toString()).toBe('author-1');
+      expect(result.result.answerComment.answerId.toString()).toBe(answer.id.toString());
+    }
   });
 
   it('should not be able to comment on a non-existing answer', async () => {
-    await expect(() =>
-      useCase.execute({
-        answerId: 'non-existing-answer',
-        authorId: 'author-1',
-        content: 'Example comment',
-      }),
-    ).rejects.toThrow('Answer not found');
+    const result = await useCase.execute({
+      answerId: 'non-existing-answer',
+      authorId: 'author-1',
+      content: 'Example comment',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 });

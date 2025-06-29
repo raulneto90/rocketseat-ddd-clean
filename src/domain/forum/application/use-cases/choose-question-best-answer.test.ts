@@ -4,6 +4,8 @@ import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-
 import { InMemoryQuestionsRepository } from 'tests/repositories/in-memory-questions-repository';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
 import { ChoooseQuestionBestAnswerUseCase } from './choose-question-best-answer';
+import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('ChooseQuestionBestAnswerUseCase', () => {
   let useCase: ChoooseQuestionBestAnswerUseCase;
@@ -46,12 +48,16 @@ describe('ChooseQuestionBestAnswerUseCase', () => {
     await inMemoryQuestionsRepository.create(newQuestion);
     await inMemoryAnswersRepository.create(answer);
 
-    await expect(
-      useCase.execute({
-        answerId: answer.id.toString(),
-        authorId: 'author-2',
-      }),
-    ).rejects.toThrow('Not allowed');
+    const result = await useCase.execute({
+      answerId: answer.id.toString(),
+      authorId: 'author-2',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(NotAllowedError);
+    }
   });
 
   it('should not be able to choose a non existent question best answer', async () => {
@@ -66,11 +72,16 @@ describe('ChooseQuestionBestAnswerUseCase', () => {
     await inMemoryQuestionsRepository.create(newQuestion);
     await inMemoryAnswersRepository.create(answer);
 
-    await expect(
-      useCase.execute({
-        answerId: 'question-1',
-        authorId: 'author-2',
-      }),
-    ).rejects.toThrow('Answer not found');
+    const result = await useCase.execute({
+      answerId: 'question-1',
+      authorId: 'author-2',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 });

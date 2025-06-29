@@ -17,12 +17,18 @@ describe('ListQuestionCommentsUseCase', () => {
     await commentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityId('question-1') }));
     await commentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityId('question-1') }));
 
-    const { questionComments } = await useCase.execute({
+    const result = await useCase.execute({
       page: 1,
       questionId: 'question-1',
     });
 
-    expect(questionComments).toHaveLength(3);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+
+    if (result.isRight()) {
+      const { questionComments } = result.result;
+      expect(questionComments).toHaveLength(3);
+    }
   });
 
   it('should be able to paginate question comments', async () => {
@@ -34,11 +40,17 @@ describe('ListQuestionCommentsUseCase', () => {
       );
     }
 
-    const { questionComments } = await useCase.execute({
+    const result = await useCase.execute({
       page: 2,
       questionId: 'question-1',
     });
 
-    expect(questionComments).toHaveLength(2);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+
+    if (result.isRight()) {
+      const { questionComments } = result.result;
+      expect(questionComments).toHaveLength(2);
+    }
   });
 });

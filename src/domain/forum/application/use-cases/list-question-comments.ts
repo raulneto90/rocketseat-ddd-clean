@@ -1,3 +1,4 @@
+import { Either, success } from '@api/core/errors/either';
 import { QuestionComment } from '../../enterprise/entities/question-comment';
 import { QuestionCommentRepository } from '../repositories/question-comments-repository';
 
@@ -6,9 +7,7 @@ interface ListQuestionCommentsUseCaseRequest {
   questionId: string;
 }
 
-interface ListQuestionCommentsUseCaseResponse {
-  questionComments: QuestionComment[];
-}
+type ListQuestionCommentsUseCaseResponse = Either<null, { questionComments: QuestionComment[] }>;
 
 export class ListQuestionCommentsUseCase {
   constructor(private readonly questionCommentsRepository: QuestionCommentRepository) {}
@@ -19,8 +18,6 @@ export class ListQuestionCommentsUseCase {
   }: ListQuestionCommentsUseCaseRequest): Promise<ListQuestionCommentsUseCaseResponse> {
     const questionComments = await this.questionCommentsRepository.findManyByQuestionId(questionId, { page });
 
-    return {
-      questionComments,
-    };
+    return success({ questionComments });
   }
 }
