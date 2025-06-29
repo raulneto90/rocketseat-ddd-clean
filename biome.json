@@ -23,7 +23,9 @@
       "style": {
         "useImportType": "off"
       },
-      "complexity": {},
+      "complexity": {
+        "noBannedTypes": "off"
+      },
       "correctness": {
         "noUnusedImports": "error"
       }

@@ -26,12 +26,17 @@ describe('DeleteAnswerComment', () => {
   });
 
   it('should not be able to delete a non-existing answer comment', async () => {
-    await expect(() =>
-      useCase.execute({
-        authorId: 'author-1',
-        answerCommentId: 'non-existing-comment',
-      }),
-    ).rejects.toThrow('Answer comment not found');
+    const result = await useCase.execute({
+      authorId: 'author-1',
+      answerCommentId: 'non-existing-comment',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBe('Answer comment not found');
+    }
   });
 
   it('should not be able to delete a answer comment from another user', async () => {
@@ -39,11 +44,16 @@ describe('DeleteAnswerComment', () => {
 
     await inMemoryAnswerCommentsRepository.create(answerComment);
 
-    await expect(() =>
-      useCase.execute({
-        authorId: 'author-2',
-        answerCommentId: answerComment.id.toString(),
-      }),
-    ).rejects.toThrow('Not allowed to delete this comment');
+    const result = await useCase.execute({
+      authorId: 'author-2',
+      answerCommentId: answerComment.id.toString(),
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+
+    if (result.isLeft()) {
+      expect(result.reason).toBe('Not allowed to delete this comment');
+    }
   });
 });
