@@ -1,7 +1,7 @@
 import { Either, failure, success } from '@api/core/errors/either';
+import { NotAllowedError } from '../errors/not-allowed-error';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { QuestionCommentRepository } from '../repositories/question-comments-repository';
-import { NotAllowedError } from './errors/not-allowed-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface DeleteQuestionUseCaseRequest {
   authorId: string;

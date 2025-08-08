@@ -1,8 +1,8 @@
 import { makeQuestionComment } from 'tests/factories/make-question-comment';
 import { InMemoryQuestionCommentsRepository } from 'tests/repositories/in-memory-question-comments-repository';
+import { NotAllowedError } from '../errors/not-allowed-error';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { DeleteQuestionCommentUseCase } from './delete-question-comment';
-import { NotAllowedError } from './errors/not-allowed-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('DeleteQuestionComment', () => {
   let useCase: DeleteQuestionCommentUseCase;

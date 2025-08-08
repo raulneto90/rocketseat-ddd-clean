@@ -1,9 +1,9 @@
 import { makeAnswer } from 'tests/factories/make-answer';
 import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
+import { NotAllowedError } from '../errors/not-allowed-error';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { DeleteAnswerUseCase } from './delete-answer';
-import { NotAllowedError } from './errors/not-allowed-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('DeleteAnswerUseCase', () => {
   let useCase: DeleteAnswerUseCase;

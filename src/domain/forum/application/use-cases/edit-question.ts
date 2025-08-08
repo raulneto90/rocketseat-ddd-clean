@@ -1,8 +1,8 @@
 import { Either, failure, success } from '@api/core/errors/either';
 import { Question } from '../../enterprise/entities/question';
+import { NotAllowedError } from '../errors/not-allowed-error';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { QuestionsRepository } from '../repositories/questions-repository';
-import { NotAllowedError } from './errors/not-allowed-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface EditQuestionUseCaseRequest {
   authorId: string;

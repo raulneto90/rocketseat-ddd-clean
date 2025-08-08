@@ -1,8 +1,8 @@
 import { makeAnswer } from 'tests/factories/make-answer';
 import { InMemoryAnswerCommentsRepository } from 'tests/repositories/in-memory-answer-comments-repository';
 import { InMemoryAnswersRepository } from 'tests/repositories/in-memory-answers-repository';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { CommentOnAnswerUseCase } from './comment-on-answer';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('CommentOnAnswerUseCase', () => {
   let useCase: CommentOnAnswerUseCase;

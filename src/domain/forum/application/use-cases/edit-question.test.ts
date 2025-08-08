@@ -1,9 +1,9 @@
 import { makeQuestion } from 'tests/factories/make-question';
 import { InMemoryQuestionsRepository } from 'tests/repositories/in-memory-questions-repository';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
+import { NotAllowedError } from '../errors/not-allowed-error';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 import { EditQuestionUseCase } from './edit-question';
-import { NotAllowedError } from './errors/not-allowed-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 describe('EditQuestionUseCase', () => {
   let useCase: EditQuestionUseCase;
