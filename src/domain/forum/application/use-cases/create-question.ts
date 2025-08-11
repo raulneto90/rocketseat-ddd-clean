@@ -1,6 +1,7 @@
 import { Either, success } from '@api/core/errors/either';
 import { Question } from '../../enterprise/entities/question';
 import { QuestionAttachment } from '../../enterprise/entities/question-attachment';
+import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list';
 import { UniqueEntityId } from '../../enterprise/entities/value-objects/unique-entity-id';
 import { QuestionsRepository } from '../repositories/questions-repository';
 
@@ -35,7 +36,7 @@ export class CreateQuestionUseCase {
       });
     });
 
-    question.attachments = questionAttachments;
+    question.attachments = new QuestionAttachmentList(questionAttachments);
 
     await this.questionsRepository.create(question);
 

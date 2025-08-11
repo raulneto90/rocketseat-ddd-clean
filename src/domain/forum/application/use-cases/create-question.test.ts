@@ -34,8 +34,8 @@ describe('CreateQuestionUseCase', () => {
       expect(question.title).toEqual('Question Title');
       expect(question.content).toEqual('Question Content');
       expect(question.createdAt).toBeInstanceOf(Date);
-      expect(question.attachments).toHaveLength(2);
-      expect(question.attachments).toEqual([
+      expect(question.attachments.currentItems).toHaveLength(2);
+      expect(question.attachments.currentItems).toEqual([
         expect.objectContaining({ attachmentId: new UniqueEntityId('1') }),
         expect.objectContaining({ attachmentId: new UniqueEntityId('2') }),
       ]);
